@@ -11,6 +11,7 @@ class ProductRow extends Component {
     }
 
     render () {
+        console.log('row ', this.props.product);
         return (
             <tr>
                 <td>{this.props.product.name}</td>

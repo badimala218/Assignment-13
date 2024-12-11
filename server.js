@@ -41,63 +41,72 @@ var ProductInfo = mongoose.Schema({
     name: String,
     instock: Boolean,
 });
-// var ProductSchema = mongoose.Schema({
-//     id: Number,
-//     product: ProductInfo,
-// });
-var ProductModel = mongoose.model("productmodel", ProductInfo);
-
-app.get('/', (req, res) => {
-    console.log(__dirname + '/public/');
-    res.send('Hello');
-    //res.sendFile(__dirname + '/public/index.html');
+var ProductSchema = mongoose.Schema({
+    id: Number,
+    product: ProductInfo,
 });
+var Product = mongoose.model("product", ProductSchema);
+
+ProductSchema.pre('save', () => {
+    console.log('save', this.name);
+});
+
+// app.get('/', (req, res) => {
+//     console.log(__dirname + '/public/');
+//     res.send('Hello');
+//     //res.sendFile(__dirname + '/public/index.html');
+// });
 
 app.get('/product/get/', (req, res) => {
     // console.log('get');
     // console.log(products);
     // res.send(products);
-    ProductModel.find({})
+    Product.find({})
         .then((products) => {
             res.send(products);
         });
 });
 
 app.post('/product/create/:id', (req, res) => {
-    console.log(req.body);
-    console.log(req.params.id);
-    var product = new ProductModel({
+    var product = new Product({
         id: req.body.id,
-        category: req.body.category,
-        name: req.body.name,
-        instock: (req.body.instock === "true"),
+        product: {
+            productid: req.body.id,
+            category: req.body.category,
+            name: req.body.name,
+            price: req.body.price,
+            instock: (req.body.instock === "true")
+        }
     });
-
+    
     product.save()
-        .then(() => {
-            console.log(product);
-            io.emit('productmodel', product);
+        .then(() => {           
+            io.emit('message', req.body);
             res.sendStatus(200);
             console.log("Data created or updated");
         })
         .catch((err) => {
-            sendStatus(500);
+            res.sendStatus(500);
         });
 });
 
 app.post('/product/update/:id', (req, res) => {
-    console.log(req.body);
-    console.log(req.params.id);
-    var product = new ProductModel(req.body);
-
-    ProductModel.findOneAndReplace({ id: req.params.id }, product)
+    Product.findOneAndUpdate({ id: req.params.id }, {
+        product: {
+            category: req.body.category,
+            price: req.body.price,
+            name: req.body.name,
+            instock: (req.body.instock === "true")
+        }
+    })
         .then(() => {
-            io.emit('productmodel', req.body);
+            io.emit('message', req.body);
             res.sendStatus(200);
             console.log("Data updated");
         })
         .catch((err) => {
-            sendStatus(500);
+            console.log('Error', err);
+            res.sendStatus(500);
         });
 });
 
@@ -105,14 +114,14 @@ app.post('/product/delete/:id', (req, res) => {
     console.log(req.body);
     console.log(req.params.id);
 
-    ProductModel.deleteOne({ id: req.params.id })
+    Product.deleteOne({ id: req.params.id })
         .then(() => {
-            io.emit('productmodel', req.body);
+            io.emit('message', req.body);
             res.sendStatus(200);
             console.log("Data deleted?");
         })
         .catch((err) => {
-            res.sendStatus(500);s
+            res.sendStatus(500);
         });
 });
 
@@ -122,6 +131,8 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     })
 });
+
+mongoose.set('debug',true);
 
 mongoose.connect(dbUrl)
     .then(() => {

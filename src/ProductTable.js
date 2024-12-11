@@ -16,6 +16,7 @@ class ProductTable extends Component {
         let rows = []
 
         productsArray.forEach((product) => {
+            console.log('table', product);
             if (product.name.indexOf(this.props.filterText) === -1) {
                 return
             }

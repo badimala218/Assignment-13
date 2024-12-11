@@ -24,7 +24,7 @@ class ProductForm extends Component {
     
         this.setState((prevState) => {
             prevState.product[name] = value
-            console.log(prevState.product);
+            console.log('form set state ', prevState.product);
             return { product: prevState.product }
         })
     }
