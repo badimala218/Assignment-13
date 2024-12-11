@@ -16,7 +16,8 @@ class ProductRow extends Component {
                 <td>{this.props.product.name}</td>
                 <td>{this.props.product.category}</td>
                 <td>{this.props.product.price}</td>
-                <td class="text-right"><button onClick={this.destroy} class="btn btn-info">Delete</button></td>
+                <td>{this.props.product.instock ? "Yes" : "No"}</td>
+                <td className="text-right"><button onClick={this.destroy} className="btn btn-info">Delete</button></td>
             </tr>
         )
     }

@@ -20,7 +20,7 @@ class Filters extends Component {
             <form>
                 <input 
                     type="text" 
-                    class="form-control" 
+                    className="form-control" 
                     placeholder="Search..." 
                     name="filterText" 
                     onChange={this.handleChange}></input>

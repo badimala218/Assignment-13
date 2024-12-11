@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-const RESET_VALUES = {id: '', category: '', price: '', name: ''}
+const RESET_VALUES = {id: '', category: '', price: '', name: '', instock: ''}
 
 class ProductForm extends Component {
     constructor(props) {
@@ -15,16 +15,22 @@ class ProductForm extends Component {
         
     handleChange(e) {
         const target = e.target
-        const value = target.value
+        var value = target.value
         const name = target.name
+        if (target.type === "checkbox") {
+            value = target.checked;
+        }
+        console.log(value);
     
         this.setState((prevState) => {
             prevState.product[name] = value
+            console.log(prevState.product);
             return { product: prevState.product }
         })
     }
 
     handleSave(e) {
+        console.log(this.state.product);
         this.props.onSave(this.state.product);
         // reset the form values to blank after submitting
         this.setState({
@@ -41,17 +47,21 @@ class ProductForm extends Component {
                 <h4>Add a new product</h4>
                 <p>
                     <label>Name <br /> 
-                    <input type="text" class="form-control" name="name" onChange={this.handleChange} value={this.state.product.name} /></label>
+                    <input type="text" className="form-control" name="name" onChange={this.handleChange} value={this.state.product.name} /></label>
                 </p>
                 <p>
                     <label>Category <br /> 
-                    <input type="text" class="form-control" name="category" onChange={this.handleChange} value={this.state.product.category} /></label>
+                    <input type="text" className="form-control" name="category" onChange={this.handleChange} value={this.state.product.category} /></label>
                 </p>
                 <p>
                     <label>Price <br /> 
-                    <input type="text" class="form-control" name="price" onChange={this.handleChange} value={this.state.product.price} /></label>
+                    <input type="text" className="form-control" name="price" onChange={this.handleChange} value={this.state.product.price} /></label>
                 </p>
-                <input type="submit" class="btn btn-info" value="Save" onClick={this.handleSave}></input>
+                <p>
+                    <label>In Stock <br /> 
+                    <input type="checkbox" className="form-control" name="instock" onChange={this.handleChange} /></label>
+                </p>
+                <input type="submit" className="btn btn-info" value="Save" onClick={this.handleSave} id="save"></input>
             </form>
         )
     }
