@@ -26,22 +26,24 @@ function addProduct(product) {
     console.trace();
     console.log('add ', product);
     console.log('add products', PRODUCTS);
-    PRODUCTS[product.id] = {      
-        id: product.id,
-        category: product["product"].category,
-        name: product['product'].name,
-        price: product['product'].price,
-        instock: (product['product'].instock === "true")
-    };
+    if (typeof product !== 'undefined') {   //When delete
+        PRODUCTS[product.id] = {      
+            id: product.id,
+            category: product["product"].category,
+            name: product['product'].name,
+            price: product['product'].price,
+            instock: (product['product'].instock === true)
+        };
+    }
 }
 
 function getProducts() {
     console.log('before get ', PRODUCTS);
     PRODUCTS = {};
-    $.get('http://localhost:3001/product/get/', (data) => {
+    $.get('http://localhost:3000/product/get/', (data) => {
         data.forEach(addProduct);
+        console.log('after get ', PRODUCTS);
     });
-    console.log('after get ', PRODUCTS);
 }
 
 function postProduct(product, location) {
@@ -53,8 +55,8 @@ function postProduct(product, location) {
 
 class Products extends Component {
     constructor(props) {
-        super(props)
-        //getProducts();        
+        super(props)   
+        getProducts();   
         this.state = {
             filterText: '',
             products: PRODUCTS
@@ -64,11 +66,16 @@ class Products extends Component {
         this.handleSave = this.handleSave.bind(this)
     }
 
-    handleGet()
-    {
-        this.setState((prevState) => {
-            let products = PRODUCTS;
-            return { products }
+    componentDidMount() {
+        console.log('before get ', PRODUCTS);
+        PRODUCTS = {};
+        $.get('http://localhost:3000/product/get/', (data) => {
+            data.forEach(addProduct);
+            console.log('after get ', PRODUCTS);
+            this.setState((prevState) => {
+                let products = PRODUCTS
+                return { products }
+            })
         });
     }
 
@@ -91,6 +98,8 @@ class Products extends Component {
     }
 
     handleDestroy(productId) {
+        // Remove from database
+        postProduct({ id: productId }, 'delete');
         this.setState((prevState) => {
             let products = prevState.products
             delete products[productId]
