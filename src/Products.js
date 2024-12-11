@@ -97,6 +97,18 @@ class Products extends Component {
         })
     }
 
+    handleUpdate(product) {
+        console.log('update',product);
+        // Update to database
+        postProduct(product, 'update');
+
+        this.setState((prevState) => {
+            let products = prevState.products
+            products[product.id] = product
+            return { products }
+        })
+    }
+
     handleDestroy(productId) {
         // Remove from database
         postProduct({ id: productId }, 'delete');
@@ -118,7 +130,8 @@ class Products extends Component {
                     filterText={this.state.filterText}
                     onDestroy={this.handleDestroy}></ProductTable>
                 <ProductForm
-                    onSave={this.handleSave}></ProductForm>
+                    onSave={this.handleSave}
+                    onUpdate={this.handleUpdate}></ProductForm>
             </div>
         )
     }

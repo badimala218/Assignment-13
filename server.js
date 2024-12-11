@@ -83,6 +83,7 @@ app.post('/product/create/:id', (req, res) => {
 });
 
 app.post('/product/update/:id', (req, res) => {
+    console.log('update', req);
     Product.findOneAndUpdate({ id: req.params.id }, {
         product: {
             category: req.body.category,
