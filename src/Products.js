@@ -18,42 +18,33 @@ export let PRODUCTS = {
 document.addEventListener("DOMContentLoaded", () => {
     var socket = io();
     console.log(socket);
-    //getProducts();
+    getProducts();
     socket.on('message', addProduct);
 });
 
 function addProduct(product) {
-    // console.log('add ', product, product.id, product.category);
-    // PRODUCTS[product.id] = {      
-    //     id: product.id,
-    //     category: product['product'].category,
-    //     name: product['product'].name,
-    //     price: product['product'].price,
-    //     instock: (product['product'].instock === "true")
-    // };
-    console.log('after add ', PRODUCTS);
+    console.trace();
+    console.log('add ', product);
+    console.log('add products', PRODUCTS);
+    PRODUCTS[product.id] = {      
+        id: product.id,
+        category: product["product"].category,
+        name: product['product'].name,
+        price: product['product'].price,
+        instock: (product['product'].instock === "true")
+    };
 }
 
 function getProducts() {
-    // var httpRequest = new XMLHttpRequest();
-    // httpRequest.onreadystatechange = function (data) {
-    //     data.forEach(addProduct);
-    // }
-    // httpRequest.open('GET', 'http://localhost:3000/products/get/');
-    // httpRequest.send();
     console.log('before get ', PRODUCTS);
     PRODUCTS = {};
-    $.get('http://localhost:3000/product/get/', (data) => {
+    $.get('http://localhost:3001/product/get/', (data) => {
         data.forEach(addProduct);
     });
+    console.log('after get ', PRODUCTS);
 }
 
 function postProduct(product, location) {
-    // var httpRequest = new XMLHttpRequest();
-    // httpRequest.open('POST', 'http://localhost:3000/products/' + location + '/' + product.id);
-    // console.log('after open');
-    // httpRequest.setRequestHeader('Content-Type', 'application/json');
-    // httpRequest.send(JSON.stringify(product));
     const path = 'http://localhost:3000/product/' + location + '/' + product.id;
     console.log(path);
     console.log(product);
@@ -71,6 +62,14 @@ class Products extends Component {
         this.handleFilter = this.handleFilter.bind(this)
         this.handleDestroy = this.handleDestroy.bind(this)
         this.handleSave = this.handleSave.bind(this)
+    }
+
+    handleGet()
+    {
+        this.setState((prevState) => {
+            let products = PRODUCTS;
+            return { products }
+        });
     }
 
     handleFilter(filterInput) {

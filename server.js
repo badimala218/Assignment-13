@@ -51,16 +51,7 @@ ProductSchema.pre('save', () => {
     console.log('save', this.name);
 });
 
-// app.get('/', (req, res) => {
-//     console.log(__dirname + '/public/');
-//     res.send('Hello');
-//     //res.sendFile(__dirname + '/public/index.html');
-// });
-
 app.get('/product/get/', (req, res) => {
-    // console.log('get');
-    // console.log(products);
-    // res.send(products);
     Product.find({})
         .then((products) => {
             res.send(products);
@@ -68,7 +59,7 @@ app.get('/product/get/', (req, res) => {
 });
 
 app.post('/product/create/:id', (req, res) => {
-    var product = new Product({
+    var newProduct = {
         id: req.body.id,
         product: {
             productid: req.body.id,
@@ -77,11 +68,12 @@ app.post('/product/create/:id', (req, res) => {
             price: req.body.price,
             instock: (req.body.instock === "true")
         }
-    });
+    };
+    var product = new Product(newProduct);
     
     product.save()
         .then(() => {           
-            io.emit('message', req.body);
+            io.emit('message', newProduct);
             res.sendStatus(200);
             console.log("Data created or updated");
         })
@@ -100,7 +92,7 @@ app.post('/product/update/:id', (req, res) => {
         }
     })
         .then(() => {
-            io.emit('message', req.body);
+            io.emit('message');
             res.sendStatus(200);
             console.log("Data updated");
         })
@@ -116,7 +108,7 @@ app.post('/product/delete/:id', (req, res) => {
 
     Product.deleteOne({ id: req.params.id })
         .then(() => {
-            io.emit('message', req.body);
+            io.emit('message');
             res.sendStatus(200);
             console.log("Data deleted?");
         })
