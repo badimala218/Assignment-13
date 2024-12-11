@@ -3,8 +3,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## To Run:
 ### On one terminal: `npm start`
 ### On another terminal: `nodemon server.js`
-Runs in ports 3000 and 3001.
-May need to refresh to get initial inventory
+- Runs in ports 3000 and 3001.
+- May need to refresh to get initial inventory.
+- The endpoints should work.  
 
 
 
