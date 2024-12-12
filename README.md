@@ -22,8 +22,8 @@ Mongoose model located in server.js.
 Express endpoints located in server.js.
 
 #### To Run:
-##### On one terminal: `npm start`
-##### On another terminal: `nodemon server.js`
+##### First, on one terminal: `nodemon server.js`
+##### On another terminal: `npm start`
 
 ___
 
