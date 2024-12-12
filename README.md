@@ -1,15 +1,33 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Assignment 13
 
-## To Run:
-### On one terminal: `npm start`
-### On another terminal: `nodemon server.js`
+### CS 648 Coursework
+Inventory management system website
+Uses:
+- Bootstrap
+- Mongoose
+- Express
+- React
+- MongoDB
+
+#### Notes
 - Runs in ports 3000 and 3001.
-- May need to refresh to get initial inventory.
-- The endpoints should work.  
+- May need to refresh browser to populate if proxy error.
+- The endpoints should work. 
+- There is a hidden form element for id.
+- Added update buttons on each product row that populate the form with product data.
+- Removed proxy line from package.json, not sure if needs proxy.
 
+#### File information
+Mongoose model located in server.js.
+Express endpoints located in server.js.
 
+#### To Run:
+##### On one terminal: `npm start`
+##### On another terminal: `nodemon server.js`
 
+___
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 

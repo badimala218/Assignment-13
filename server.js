@@ -8,7 +8,6 @@ var io = require('socket.io')(http, {
     }
 });
 var mongoose = require('mongoose');
-const path = require('path');
 const cors = require("cors");
 
 var dbUrl = 'mongodb+srv://admin:admin@nodeproject.c2npo.mongodb.net/?retryWrites=true&w=majority&appName=NodeProject';
@@ -21,19 +20,7 @@ app.use(express.static(__dirname + '/src'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-var products = {
-    '1': {id: 1, category: 'Music', price: '$459.99', name: 'Clarinet', instock: true},
-    '2': {id: 2, category: 'Music', price: '$5,000', name: 'Cello', instock: true},
-    '3': {id: 3, category: 'Music', price: '$3,500', name: 'Tuba', instock: false},
-    '4': {id: 4, category: 'Furniture', price: '$799', name: 'Chaise Lounge', instock: true},
-    '5': {id: 5, category: 'Furniture', price: '$1,300', name: 'Dining Table', instock: true},
-    '6': {id: 6, category: 'Furniture', price: '$100', name: 'Bean Bag', instock: true}
-};
-
-var corsOptions = {
-    origin: "http://localhost:3001"
-};
-
+// Mongoose model
 var ProductInfo = mongoose.Schema({
     productid: Number,
     category: String,
@@ -47,10 +34,7 @@ var ProductSchema = mongoose.Schema({
 });
 var Product = mongoose.model("product", ProductSchema);
 
-ProductSchema.pre('save', () => {
-    console.log('save', this.name);
-});
-
+// Endpoint: /product/get/
 app.get('/product/get/', (req, res) => {
     Product.find({})
         .then((products) => {
@@ -58,6 +42,7 @@ app.get('/product/get/', (req, res) => {
         });
 });
 
+// Endpoint: /product/create
 app.post('/product/create/:id', (req, res) => {
     var newProduct = {
         id: req.body.id,
@@ -82,8 +67,8 @@ app.post('/product/create/:id', (req, res) => {
         });
 });
 
+// Endpoint: /product/update/{id}
 app.post('/product/update/:id', (req, res) => {
-    console.log('update', req);
     Product.findOneAndUpdate({ id: req.params.id }, {
         product: {
             category: req.body.category,
@@ -98,20 +83,17 @@ app.post('/product/update/:id', (req, res) => {
             console.log("Data updated");
         })
         .catch((err) => {
-            console.log('Error', err);
             res.sendStatus(500);
         });
 });
 
+// Endpoint: /product/delete/{id}
 app.post('/product/delete/:id', (req, res) => {
-    console.log(req.body);
-    console.log(req.params.id);
-
     Product.deleteOne({ id: req.params.id })
         .then(() => {
             io.emit('message');
             res.sendStatus(200);
-            console.log("Data deleted?");
+            console.log("Data deleted");
         })
         .catch((err) => {
             res.sendStatus(500);
@@ -124,8 +106,6 @@ io.on('connection', (socket) => {
         console.log('user disconnected');
     })
 });
-
-mongoose.set('debug',true);
 
 mongoose.connect(dbUrl)
     .then(() => {
