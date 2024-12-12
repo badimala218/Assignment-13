@@ -20,6 +20,7 @@ Uses:
 #### File information
 - Mongoose model located in server.js.
 - Express endpoints located in server.js.
+- Client behavior located in Products.js
 
 ### To Run:
 #### On one terminal: `npm start`
