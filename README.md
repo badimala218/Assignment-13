@@ -15,7 +15,6 @@ Uses:
 - The endpoints should work. 
 - There is a hidden form element for id.
 - Added update buttons on each product row that populate the form with product data.
-- Removed proxy line from package.json, not sure if needs proxy.
 
 #### File information
 - Mongoose model located in server.js.
