@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import Filters from './Filters'
 import ProductTable from './ProductTable'
 import ProductForm from './ProductForm'
-// import client from './client.js'
 import $ from 'jquery';
 import { io } from 'socket.io-client'
 
-export let PRODUCTS = {
+let PRODUCTS = {
     '1': {id: 1, category: 'Music', price: '$459.99', name: 'Clarinet', instock: true},
     '2': {id: 2, category: 'Music', price: '$5,000', name: 'Cello', instock: true},
     '3': {id: 3, category: 'Music', price: '$3,500', name: 'Tuba', instock: false},
@@ -17,16 +16,13 @@ export let PRODUCTS = {
 
 document.addEventListener("DOMContentLoaded", () => {
     var socket = io();
-    console.log(socket);
     getProducts();
     socket.on('message', addProduct);
 });
 
 function addProduct(product) {
-    console.trace();
-    console.log('add ', product);
-    console.log('add products', PRODUCTS);
-    if (typeof product !== 'undefined') {   //When delete
+    // Ignore when callback from delete
+    if (typeof product !== 'undefined') {   
         PRODUCTS[product.id] = {      
             id: product.id,
             category: product["product"].category,
@@ -38,18 +34,14 @@ function addProduct(product) {
 }
 
 function getProducts() {
-    console.log('before get ', PRODUCTS);
     PRODUCTS = {};
     $.get('http://localhost:3000/product/get/', (data) => {
         data.forEach(addProduct);
-        console.log('after get ', PRODUCTS);
     });
 }
 
 function postProduct(product, location) {
     const path = 'http://localhost:3000/product/' + location + '/' + product.id;
-    console.log(path);
-    console.log(product);
     $.post(path, product);
 }
 
@@ -59,23 +51,20 @@ class Products extends Component {
         getProducts();   
         this.state = {
             filterText: '',
-            products: PRODUCTS
+            autofill: {},
+            products: PRODUCTS,
         }
         this.handleFilter = this.handleFilter.bind(this)
         this.handleDestroy = this.handleDestroy.bind(this)
         this.handleSave = this.handleSave.bind(this)
+        this.handleUpdateSelection = this.handleUpdateSelection.bind(this)
     }
 
     componentDidMount() {
-        console.log('before get ', PRODUCTS);
         PRODUCTS = {};
         $.get('http://localhost:3000/product/get/', (data) => {
             data.forEach(addProduct);
-            console.log('after get ', PRODUCTS);
-            this.setState((prevState) => {
-                let products = PRODUCTS
-                return { products }
-            })
+            this.setState({ products : PRODUCTS })
         });
     }
 
@@ -84,29 +73,24 @@ class Products extends Component {
     }
 
     handleSave(product) {
+        // Add to database
         if (!product.id) {
-            product.id = new Date().getTime()
+            product.id = new Date().getTime();
+            postProduct(product, 'create');
         }
-        // Add to products
-        postProduct(product, 'create');
+        else {
+            postProduct(product, 'update');
+        }
 
         this.setState((prevState) => {
             let products = prevState.products
             products[product.id] = product
-            return { products }
+            return { products, autofill: {} }
         })
     }
 
-    handleUpdate(product) {
-        console.log('update',product);
-        // Update to database
-        postProduct(product, 'update');
-
-        this.setState((prevState) => {
-            let products = prevState.products
-            products[product.id] = product
-            return { products }
-        })
+    handleUpdateSelection(autofill) {
+        this.setState({autofill})
     }
 
     handleDestroy(productId) {
@@ -128,10 +112,11 @@ class Products extends Component {
                 <ProductTable 
                     products={this.state.products}
                     filterText={this.state.filterText}
-                    onDestroy={this.handleDestroy}></ProductTable>
+                    onDestroy={this.handleDestroy}
+                    onUpdate={this.handleUpdateSelection}></ProductTable>
                 <ProductForm
-                    onSave={this.handleSave}
-                    onUpdate={this.handleUpdate}></ProductForm>
+                    autofill={this.state.autofill}
+                    onSave={this.handleSave}></ProductForm>
             </div>
         )
     }

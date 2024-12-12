@@ -5,6 +5,11 @@ class ProductTable extends Component {
     constructor(props) {
         super(props)
         this.handleDestroy = this.handleDestroy.bind(this)
+        this.handleUpdate = this.handleUpdate.bind(this);
+    }
+
+    handleUpdate(product) {
+        this.props.onUpdate(product);
     }
 
     handleDestroy(id) {
@@ -16,7 +21,6 @@ class ProductTable extends Component {
         let rows = []
 
         productsArray.forEach((product) => {
-            console.log('table', product);
             if (product.name.indexOf(this.props.filterText) === -1) {
                 return
             }
@@ -24,7 +28,8 @@ class ProductTable extends Component {
                 <ProductRow 
                     product={product} 
                     key={product.id} 
-                    onDestroy={this.handleDestroy}></ProductRow>
+                    onDestroy={this.handleDestroy}
+                    onUpdate={this.handleUpdate}></ProductRow>
             )
         })
 
