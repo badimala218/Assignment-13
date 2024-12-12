@@ -1,7 +1,7 @@
 # Assignment 13
 
 ### CS 648 Coursework
-Inventory management system website
+Inventory management system website. 
 Uses:
 - Bootstrap
 - Mongoose
