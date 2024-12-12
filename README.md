@@ -1,7 +1,7 @@
 # Assignment 13
 
 ### CS 648 Coursework
-Inventory management system website
+Inventory management system website. 
 Uses:
 - Bootstrap
 - Mongoose
@@ -15,11 +15,11 @@ Uses:
 - The endpoints should work. 
 - There is a hidden form element for id.
 - Added update buttons on each product row that populate the form with product data.
-- Removed proxy line from package.json, not sure if needs proxy.
 
 #### File information
-Mongoose model located in server.js.
-Express endpoints located in server.js.
+- Mongoose model located in server.js.
+- Express endpoints located in server.js.
+- Client behavior located in Products.js
 
 #### To Run:
 ##### First, on one terminal: `nodemon server.js`
