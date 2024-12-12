@@ -18,8 +18,8 @@ Uses:
 - Removed proxy line from package.json, not sure if needs proxy.
 
 #### File information
-Mongoose model located in server.js.
-Express endpoints located in server.js.
+- Mongoose model located in server.js.
+- Express endpoints located in server.js.
 
 ### To Run:
 #### On one terminal: `npm start`
